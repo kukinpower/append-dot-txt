@@ -3,7 +3,10 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+const suffix = ".txt"
 
 func main() {
 	if len(os.Args) == 2 {
@@ -30,7 +33,7 @@ func main() {
 
 func getFilesInPath(path string, files []string) (error, []string) {
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() {
+		if !info.IsDir() && !strings.HasSuffix(path, suffix) {
 			files = append(files, path)
 		}
 		return nil
@@ -40,7 +43,7 @@ func getFilesInPath(path string, files []string) (error, []string) {
 
 func appendDotTxt(files []string) bool {
 	for _, file := range files {
-		err := os.Rename(file, file+".txt")
+		err := os.Rename(file, file+suffix)
 		if err != nil {
 			return true
 		}
